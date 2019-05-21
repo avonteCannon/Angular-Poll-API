@@ -6,16 +6,14 @@ import com.avonte.votingpolldemo.dto.VoteResult;
 import com.avonte.votingpolldemo.repository.VoteRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+//@CrossOrigin("*")
 public class computeResultController {
 
     @Inject
@@ -27,8 +25,9 @@ public class computeResultController {
         Iterable<Vote> allVotes = voteRepository.findByPoll(pollId);
 
         int totalVotes = 0;
-        Map<Long, OptionCount> tempMap = new HashMap<Long, OptionCount>();
+        Map<Long, OptionCount> tempMap = new HashMap<>();
         for(Vote x : allVotes){
+            totalVotes++;
 
             OptionCount optionCount = tempMap.get(x.getOption().getId());
             if (optionCount == null){
@@ -42,7 +41,7 @@ public class computeResultController {
         voteResult.setTotalVotes(totalVotes);
         voteResult.setResults(tempMap.values());
 
-        return new ResponseEntity<VoteResult>(voteResult, HttpStatus.OK);
+        return new ResponseEntity<>(voteResult, HttpStatus.OK);
     }
 }
 
